@@ -91,8 +91,24 @@ display(df.select(split(df.email, '@', 0).alias('email_handle')))
 
 mattress_df = (details_df
                .filter(array_contains(col("details"), "Mattress"))
-               .withColumn("size", element_at(col("details"), 2)))
+               .withColumn("size", element_at(col("details"), 2))
+               #.withColumn("quality", element_at(col("details"), 1))
+)
 display(mattress_df)
+
+# COMMAND ----------
+
+pillow_df = (details_df
+               .filter(array_contains(col("details"), "Pillow"))
+               .withColumn("size", element_at(col("details"), 1))
+#               .withColumn("quality", element_at(col("details"), 2))
+)
+display(pillow_df)
+
+# COMMAND ----------
+
+pillows_and_mattresses_df = mattress_df.unionAll(pillow_df)
+display(pillows_and_mattresses_df.orderBy("size"))
 
 # COMMAND ----------
 
@@ -112,6 +128,7 @@ display(mattress_df)
 # COMMAND ----------
 
 size_df = mattress_df.groupBy("email").agg(collect_set("size").alias("size options"))
+#size_df = pillows_and_mattresses_df.groupBy("email").agg(collect_set("size").alias("size options"),collect_set("quality").alias("size options"))
 
 display(size_df)
 

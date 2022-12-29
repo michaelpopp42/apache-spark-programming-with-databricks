@@ -97,6 +97,8 @@ print(sales_df.na.drop().count())
 sales_exploded_df = sales_df.withColumn("items", explode(col("items")))
 display(sales_exploded_df.select("items.coupon"))
 print(sales_exploded_df.select("items.coupon").count())
+display(sales_exploded_df.filter(col("items.coupon").isNull()))
+print(sales_exploded_df.filter(col("items.coupon").isNull()).count()) 
 print(sales_exploded_df.select("items.coupon").na.drop().count())
 
 # COMMAND ----------
