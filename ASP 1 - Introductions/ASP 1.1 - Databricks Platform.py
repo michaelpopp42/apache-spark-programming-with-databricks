@@ -161,11 +161,18 @@ displayHTML(html)
 
 # COMMAND ----------
 
+# MAGIC 
 # MAGIC %fs put dbfs:/tmp/FILL_IN.txt "This is a test of the emergency broadcast system, this is only a test" --overwrite=true
 
 # COMMAND ----------
 
 # MAGIC %fs head dbfs:/tmp/FILL_IN.txt
+
+# COMMAND ----------
+
+# the above  equivalant to:
+dbutils.fs.head("dbfs:/tmp/FILL_IN.txt")
+
 
 # COMMAND ----------
 
@@ -208,7 +215,7 @@ contents = dbutils.fs.head(file_name)
 
 print("-"*80)
 print(contents)
-print("-"*80)
+print("-"*83)
 
 # COMMAND ----------
 
@@ -341,6 +348,10 @@ print(f"Database Name: {DA.schema_name}")
 
 dbutils.widgets.text("name", "Brickster", "Name")
 dbutils.widgets.multiselect("colors", "orange", ["red", "orange", "black", "blue"], "Favorite Color?")
+
+# COMMAND ----------
+
+dbutils.widgets.multiselect("colors", "blue", ["red", "orange", "black", "blue"], "Favorite Color?")
 
 # COMMAND ----------
 

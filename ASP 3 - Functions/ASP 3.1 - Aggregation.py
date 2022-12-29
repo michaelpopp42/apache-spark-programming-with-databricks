@@ -93,6 +93,7 @@ display(avg_state_purchases_df)
 # COMMAND ----------
 
 city_purchase_quantities_df = df.groupBy("geo.state", "geo.city").sum("ecommerce.total_item_quantity", "ecommerce.purchase_revenue_in_usd")
+#city_purchase_quantities_df = df.groupBy("geo.state", "geo.city").agg(sum("ecommerce.total_item_quantity"), sum("ecommerce.purchase_revenue_in_usd")) # This gives same result
 display(city_purchase_quantities_df)
 
 # COMMAND ----------

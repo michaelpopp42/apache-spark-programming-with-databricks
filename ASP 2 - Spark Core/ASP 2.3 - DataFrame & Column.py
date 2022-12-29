@@ -218,12 +218,16 @@ display(purchases_df)
 # COMMAND ----------
 
 revenue_df = events_df.filter(col("ecommerce.purchase_revenue_in_usd").isNotNull())
+revenue_df = events_df.filter("ecommerce.purchase_revenue_in_usd IS NULL") # Mine
+
 display(revenue_df)
 
 # COMMAND ----------
 
 android_df = events_df.filter((col("traffic_source") != "direct") & (col("device") == "Android"))
+#android_df = events_df.filter("( traffic_source <> 'direct' ) AND (device = 'Android')") # mine
 display(android_df)
+android_df.count()
 
 # COMMAND ----------
 
@@ -271,11 +275,14 @@ display(increase_timestamps_df)
 # COMMAND ----------
 
 decrease_timestamp_df = events_df.sort(col("event_timestamp").desc())
+### THIS DOES NOT WORK decrease_timestamp_df = events_df.sort("event_timestamp DESC")
 display(decrease_timestamp_df)
 
 # COMMAND ----------
 
 increase_sessions_df = events_df.orderBy(["user_first_touch_timestamp", "event_timestamp"])
+#### DOES NOT WORK increase_sessions_df = events_df.orderBy("user_first_touch_timestamp, event_timestamp")
+increase_sessions_df = events_df.orderBy("user_first_touch_timestamp", "event_timestamp") ### This also seems to work
 display(increase_sessions_df)
 
 # COMMAND ----------

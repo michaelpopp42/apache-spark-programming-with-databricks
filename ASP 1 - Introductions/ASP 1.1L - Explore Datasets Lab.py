@@ -35,7 +35,7 @@
 
 # COMMAND ----------
 
-# <FILL_IN>
+# MAGIC %sh ls '/mnt/dbacademy-users'
 
 # COMMAND ----------
 
@@ -48,7 +48,7 @@
 # COMMAND ----------
 
 # TODO
-files = FILL_IN
+files = dbutils.fs.ls("/mnt/dbacademy-users")
 display(files)
 
 # COMMAND ----------
@@ -63,8 +63,23 @@ display(files)
 
 # COMMAND ----------
 
+dbutils.fs.ls(f"{DA.paths.datasets}")
+dbutils.fs.ls(f"{DA.paths.users}")
+
+# COMMAND ----------
+
 # MAGIC %sql
-# MAGIC -- TODO
+# MAGIC CREATE TABLE IF NOT EXISTS users
+# MAGIC OPTIONS( path = '${DA.paths.users}' );
+# MAGIC 
+# MAGIC CREATE TABLE IF NOT EXISTS sales
+# MAGIC OPTIONS( path = '${DA.paths.sales}' );
+# MAGIC 
+# MAGIC CREATE TABLE IF NOT EXISTS products
+# MAGIC OPTIONS( path = '${DA.paths.products}' );
+# MAGIC 
+# MAGIC CREATE TABLE IF NOT EXISTS events
+# MAGIC OPTIONS( path = '${DA.paths.events}' );
 
 # COMMAND ----------
 
@@ -100,7 +115,7 @@ display(files)
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC -- TODO
+# MAGIC SELECT * FROM products
 
 # COMMAND ----------
 
@@ -126,7 +141,7 @@ display(files)
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC -- TODO
+# MAGIC SELECT AVG(purchase_revenue_in_usd) FROm SALES
 
 # COMMAND ----------
 
@@ -155,7 +170,7 @@ display(files)
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC -- TODO
+# MAGIC SELECt DISTINCT event_name FROM events
 
 # COMMAND ----------
 

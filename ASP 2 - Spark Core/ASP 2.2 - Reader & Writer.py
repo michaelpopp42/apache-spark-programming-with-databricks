@@ -297,6 +297,13 @@ display(
 
 # COMMAND ----------
 
+# MAGIC %sql
+# MAGIC SHOW DATABASES;
+# MAGIC DESCRIBE DATABASE michaelpopp42_ro5e_da_asp;
+# MAGIC DROP TABLE events
+
+# COMMAND ----------
+
 events_df.write.mode("overwrite").saveAsTable("events")
 
 # COMMAND ----------
@@ -360,6 +367,18 @@ events_output_path = f"{DA.paths.working_dir}/delta/events"
 # COMMAND ----------
 
 # MAGIC %md ### Clean up classroom
+
+# COMMAND ----------
+
+#users_df.write.parquet(users_output_dir, compression="snappy", mode="overwrite")
+#dbutils.fs.ls(users_output_dir) ## parquet file, no acid , no history
+
+#events_df.write.mode("overwrite").saveAsTable("events")
+#dbutils.fs.ls("dbfs:/mnt/dbacademy-users/michaelpopp42@gmail.com/apache-spark-programming-with-databricks/database.db/events") ## parquet file, no acid , no history
+
+#events_output_path = f"{DA.paths.working_dir}/delta/events"
+#events_df.write.format("delta").mode("overwrite").save(events_output_path)
+#dbutils.fs.ls(f"{DA.paths.working_dir}/delta/events")
 
 # COMMAND ----------
 

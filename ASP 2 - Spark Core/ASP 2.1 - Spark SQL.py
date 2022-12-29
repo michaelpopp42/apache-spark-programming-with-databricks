@@ -20,6 +20,7 @@
 # MAGIC 1. Convert between DataFrames and SQL
 # MAGIC 
 # MAGIC ##### Methods
+# MAGIC - <a href="https://spark.apache.org/docs/latest/api" target="_blank">Start of Latest Docs on all Spark APIs</a>: **`start of docs`**, **`table`**
 # MAGIC - <a href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/spark_session.html" target="_blank">SparkSession</a>: **`sql`**, **`table`**
 # MAGIC - <a href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/dataframe.html" target="_blank">DataFrame</a>:
 # MAGIC   - Transformations:  **`select`**, **`where`**, **`orderBy`**

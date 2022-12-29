@@ -67,6 +67,10 @@ display(timestamp_df)
 
 # COMMAND ----------
 
+type(1e6)
+
+# COMMAND ----------
+
 from pyspark.sql.types import TimestampType
 
 timestamp_df = df.withColumn("timestamp", (col("timestamp") / 1e6).cast(TimestampType()))
@@ -106,10 +110,14 @@ display(timestamp_df)
 # COMMAND ----------
 
 from pyspark.sql.functions import date_format
+from pyspark.sql.functions import col, lit
 
 formatted_df = (timestamp_df
                 .withColumn("date string", date_format("timestamp", "MMMM dd, yyyy"))
                 .withColumn("time string", date_format("timestamp", "HH:mm:ss.SSSSSS"))
+#                .withColumn("newTimestamp", lit('2020-09-01T10:52:48.778+0000').cast("timestamp"))
+#                .withColumn("newTimestampSep", date_format("newTimestamp", "MMM dd, yyyy")) # yields Sep, 01, 2020
+#                .withColumn("newTimestampSeptember", date_format("newTimestamp", "MMMM dd, yyyy")) # yields September, 01, 2020
                )
 display(formatted_df)
 
