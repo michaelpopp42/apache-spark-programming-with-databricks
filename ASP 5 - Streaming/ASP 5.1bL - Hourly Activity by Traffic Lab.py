@@ -47,7 +47,12 @@ df = (spark.readStream
 # COMMAND ----------
 
 # TODO
-events_df = (df.FILL_IN)
+from pyspark.sql.functions import col
+events_df = (df
+             .withColumn("createdAt", (col("event_timestamp") / 10e6).cast("timestamp"))
+             .withWatermark("createdAt", "2 hours")
+            )
+      
 
 # COMMAND ----------
 
@@ -71,10 +76,26 @@ DA.tests.validate_1_1(events_df.schema)
 # COMMAND ----------
 
 # TODO
-spark.FILL_IN
+from pyspark.sql.functions import window, col, hour
 
-traffic_df = (events_df.FILL_IN
+win =  window(
+        "createdAt",
+        windowDuration="1 hour"
+       )
+
+numberCores = spark.sparkContext.defaultParallelism
+traffic_df = (events_df
+ .repartition(numberCores)
+ .withColumn("hourWin", win)
+ .withColumn("hour", hour(col("createdAt")))             
+ .groupBy(col("traffic_source"), col("hour"))
+ .count()
+ .withColumnRenamed("count","active_users")
+ .select(col("traffic_source"), col("hour"), col("active_users"))
+ .orderBy(col("hour").desc())
 )
+
+
 
 # COMMAND ----------
 
@@ -98,6 +119,8 @@ DA.tests.validate_2_1(traffic_df.schema)
 # COMMAND ----------
 
 # TODO
+streamQuery = display(traffic_df,streamName="hourly_traffic")
+
 
 # COMMAND ----------
 
@@ -118,7 +141,13 @@ DA.tests.validate_2_1(traffic_df.schema)
 # TODO
 DA.block_until_stream_is_ready("hourly_traffic")
 
-for s in FILL_IN:
+for s in spark.streams.active:
+    print(s.name)
+    print(s.runId)
+    print(s.status)
+    if (s.name == "hourly_traffic"):
+        s.stop()
+  
 
 # COMMAND ----------
 

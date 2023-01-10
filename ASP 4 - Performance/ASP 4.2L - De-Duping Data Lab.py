@@ -60,6 +60,7 @@ dbutils.fs.head(f"{DA.paths.datasets}/people/people-with-dups.txt")
 # COMMAND ----------
 
 # TODO
+from pyspark.sql.functions import col, upper, translate
 
 source_file = f"{DA.paths.datasets}/people/people-with-dups.txt"
 delta_dest_dir = f"{DA.paths.working_dir}/people"
@@ -68,6 +69,25 @@ delta_dest_dir = f"{DA.paths.working_dir}/people"
 dbutils.fs.rm(delta_dest_dir, True)
 
 # Complete your work here...
+
+with_dups_df = spark.read.format('csv').option('header', True).option('sep', ":").option('inferSchema', True).load(source_file)
+#with_dups_df = with_dups_df.repartition(4)
+no_dups_df = (with_dups_df
+             .withColumn("firstName_u", upper(col("firstName")))
+             .withColumn("lastName_u", upper(col("lastName")))
+             .withColumn("middleName_u", upper(col("middleName")))
+             .withColumn("gender_u", upper(col("gender")))
+             .withColumn("ssn_c", translate(col("ssn"),'-',''))
+             .dropDuplicates(["firstName_u", "lastName_u", "middleName_u", "gender_u", "ssn_c", 'birthDate', 'salary'])
+             .drop("firstName_u") 
+             .drop("lastName_u") 
+             .drop("middleName_u") 
+             .drop("gender_u") 
+             .drop("ssn_c") 
+             )
+
+no_dups_df = no_dups_df.coalesce(1)
+no_dups_df.write.format("delta").mode("overwrite").save(delta_dest_dir)
 
 
 # COMMAND ----------
