@@ -43,8 +43,16 @@
 
 # COMMAND ----------
 
+dbutils.fs.ls(DA.paths.events)
+
+# COMMAND ----------
+
 # TODO
-df = FILL_IN
+df = (spark.readStream
+      .option("maxFilesPerTrigger", 1)
+      .format("delta")
+      .load(DA.paths.events)
+     )
 
 # COMMAND ----------
 
@@ -65,9 +73,18 @@ DA.tests.validate_1_1(df)
 # COMMAND ----------
 
 # TODO
-spark.FILL_IN
+from pyspark.sql.functions import col
+numberCores = spark.sparkContext.defaultParallelism
 
-traffic_df = df.FILL_IN
+traffic_df = (df
+              .repartition(numberCores)
+              .groupBy("traffic_source")
+              .count()
+              .withColumnRenamed("count", "active_users")
+              .orderBy("traffic_source")
+             )
+
+
 
 # COMMAND ----------
 
@@ -86,6 +103,7 @@ DA.tests.validate_2_1(traffic_df.schema)
 # COMMAND ----------
 
 # TODO
+display(traffic_df,queryName="traffic")
 
 # COMMAND ----------
 
@@ -103,7 +121,14 @@ DA.tests.validate_2_1(traffic_df.schema)
 # COMMAND ----------
 
 # TODO
-traffic_query = (traffic_df.FILL_IN
+traffic_query = (traffic_df
+                 .writeStream
+                 .queryName("active_users_by_traffic")
+                 .format("memory")
+                 .outputMode("complete")
+                 .trigger(processingTime="1 second")
+                 .start()
+                 #.awaitTermination(20)
 )
 
 # COMMAND ----------
@@ -122,7 +147,7 @@ DA.tests.validate_4_1(traffic_query)
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC -- TODO
+# MAGIC SELECt * FROM active_users_by_traffic
 
 # COMMAND ----------
 
@@ -147,6 +172,10 @@ DA.tests.validate_4_1(traffic_query)
 # COMMAND ----------
 
 # TODO
+for s in spark.streams.active:
+    print(s.name)
+    s.stop()
+
 
 # COMMAND ----------
 
